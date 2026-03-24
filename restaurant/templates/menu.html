@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Menu</h1>
+
+{% for item in items %}
+    <h3>
+        <a href="/menu/{{ item.id }}/">
+            {{ item.name }} - ${{ item.price }}
+        </a>
+    </h3>
+{% endfor %}
+
+{% endblock %}

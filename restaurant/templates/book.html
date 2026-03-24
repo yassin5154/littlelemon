@@ -1,0 +1,57 @@
+<form id="bookingForm">
+    <input type="text" id="name" placeholder="First Name" required>
+
+    <input type="date" id="date" required>
+
+    <select id="slot">
+        <option value="17">17:00</option>
+        <option value="18">18:00</option>
+        <option value="19">19:00</option>
+    </select>
+
+    <button type="submit">Book</button>
+</form>
+
+<p id="message"></p>
+<script>
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('date').value = today;
+
+document.getElementById('bookingForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    fetch('/bookings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            first_name: document.getElementById('name').value,
+            reservation_date: document.getElementById('date').value,
+            reservation_slot: document.getElementById('slot').value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('message').innerText = "Booking successful!";
+    })
+    .catch(err => {
+        document.getElementById('message').innerText = "Error booking.";
+    });
+});
+function loadBookings(date){
+    fetch(`/bookings/?reservation_date=${date}`)
+    .then(res => res.json())
+    .then(data => {
+        if(data.length === 0){
+            console.log("No Booking");
+        } else {
+            console.log(data);
+        }
+    });
+}
+
+document.getElementById('date').addEventListener('change', function(){
+    loadBookings(this.value);
+});
+</script>
